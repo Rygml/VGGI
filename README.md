@@ -1,8 +1,5 @@
-﻿Лабораторні роботи
+# WebGL
 
-| Назва | Звідки береться код | Гілка |
-|------|----------------------|------|
-| PA1  | папка L1             | [PA1](../../tree/PA1) |
-| PA2  | папка L2             | [PA2](../../tree/PA2) |
-| CT   | папка CT             | [CT](../../tree/CT) |
-| CGW  | папка GF             | [CGW](../../tree/CGW) |
+Project that accompanies VGGI credit module.
+
+Visit vggi-kpi.blogspot.com for more information

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>WebGL PA#2</title>
+
+    <style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+
+    font-family: 'Consolas', 'Courier New', monospace; 
+    background-color: #121212; 
+    color: #E0E0E0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    min-height: 100vh;
+}
+
+
+h1 {
+
+    color: #00FF99; 
+    margin-bottom: 8px;
+    margin-top: 15px;
+    font-size: 2.8em;
+    text-shadow: 0 0 5px #00FF99, 0 0 10px rgba(0, 255, 153, 0.5); 
+    letter-spacing: 2px;
+}
+
+#message {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #99FFFF; 
+    font-size: 1.15em;
+    line-height: 1.5;
+    background-color: #1E1E1E; 
+    padding: 10px 20px;
+    border-radius: 5px;
+    border-left: 3px solid #00FFFF; 
+}
+
+#canvas-holder {
+    border: 1px solid #00FFFF; 
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.4), 0 0 30px rgba(0, 255, 153, 0.1); 
+    border-radius: 4px; 
+    overflow: hidden;
+    background-color: #000000; 
+    transition: box-shadow 0.4s ease, transform 0.2s ease;
+}
+
+
+#webglcanvas {
+    display: block;
+    background-color: #000000; 
+}
+
+.info {
+    margin-top: 20px;
+    background-color: #1E1E1E;
+    padding: 15px;
+    border-radius: 5px;
+    border-left: 3px solid #00FF99;
+    width: 600px;
+}
+
+.info label {
+    color: #00FF99;
+    margin-right: 10px;
+}
+
+.info input[type="range"] {
+    width: 300px;
+    margin-right: 10px;
+}
+
+.info span {
+    color: #99FFFF;
+}
+
+
+    </style>
+
+    <script src="./Utils/trackball-rotator.js"></script>
+    <script src="./Utils/m4.js"></script>
+    <script src="./shader.gpu"></script>
+    <script src="./main.js"></script>
+
+
+
+</head>
+<body onload="init()">
+
+
+    <p id="message">
+        Variant 20<br>
+    </p>
+
+
+    <div id="canvas-holder">
+        <canvas width="600" height="600" id="webglcanvas"></canvas>
+    </div>
+
+    <div class="info">
+        <div style="font-size: 14px; line-height: 1.5;">
+            <div><b>PA2 (variant 20):</b></div>
+            <div>- Shading Goraud</div>
+            <div>- Vertex Normal Facet Angle Weighted Average</div>
+            <hr style="margin:12px 0; opacity:0.25;">
+            <div>
+                <label for="u-slider">U Granularity:</label>
+                <input type="range" id="u-slider" min="2" max="100" value="30" step="2">
+                <span id="u-value">30</span>
+            </div>
+            <div>
+                <label for="v-slider">V Granularity:</label>
+                <input type="range" id="v-slider" min="2" max="100" value="60" step="2">
+                <span id="v-value">60</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
