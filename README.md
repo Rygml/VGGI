@@ -1,8 +1,8 @@
 ﻿Лабораторні роботи
 
-| Назва | Звідки береться код | Гілка |
-|------|----------------------|------|
-| PA1  | папка L1             | [PA1](../../tree/PA1) |
-| PA2  | папка L2             | [PA2](../../tree/PA2) |
-| CT   | папка CT             | [CT](../../tree/CT) |
-| CGW  | папка GF             | [CGW](../../tree/CGW) |
+| Назва | Звідки береться код              | Гілка |
+|-------|----------------------------------|------|
+|  PA1  |         Surface Rendering        | [PA1](../../tree/PA1) |
+|  PA2  |           GL Lightning           | [PA2](../../tree/PA2) |
+|  CT   |            Texturing             | [CT](../../tree/CT) |
+|  CGW  |Operations on texture coordinates | [CGW](../../tree/CGW) |
