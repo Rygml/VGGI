@@ -1,0 +1,123 @@
+// Vertex shader
+const vertexShaderSource = `
+attribute vec3 a_vertex;
+attribute vec3 a_normal;
+attribute vec2 a_texCoord;
+attribute vec4 a_tangent;
+
+uniform mat4 u_modelViewMatrix;
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_normalMatrix;
+
+varying vec2 v_uv;
+varying vec3 v_posVS;
+varying vec3 v_N;
+varying vec3 v_T;
+varying vec3 v_B;
+
+void main() {
+    vec4 posVS = u_modelViewMatrix * vec4(a_vertex, 1.0);
+    v_posVS = posVS.xyz;
+
+    // Transform N,T to view space
+    vec3 N = normalize((u_normalMatrix * vec4(a_normal, 0.0)).xyz);
+    vec3 T = normalize((u_modelViewMatrix * vec4(a_tangent.xyz, 0.0)).xyz);
+
+    // Prioritize normal (stabilize T wrt N)
+    T = normalize(T - N * dot(N, T));
+
+    vec3 B = normalize(cross(N, T)) * a_tangent.w;
+
+    v_N = N;
+    v_T = T;
+    v_B = B;
+
+    v_uv = a_texCoord;
+    gl_Position = u_projectionMatrix * posVS;
+}`;
+
+
+// Fragment shader
+const fragmentShaderSource = `
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+
+varying vec2 v_uv;
+varying vec3 v_posVS;
+varying vec3 v_N;
+varying vec3 v_T;
+varying vec3 v_B;
+
+uniform vec3 u_lightPos;      // in view space
+uniform vec3 u_ambientColor;
+uniform vec3 u_diffuseColor;
+uniform vec3 u_specularColor;
+uniform float u_shininess;
+
+uniform sampler2D u_diffuseTex;
+uniform sampler2D u_specularTex;
+uniform sampler2D u_normalTex;
+
+uniform vec2  u_texPivot;   // pivot (u,v) in [0..1]
+uniform float u_texAngle;   // radians
+
+
+vec2 rotateUV(vec2 uv, vec2 pivot, float angle) {
+    float s = sin(angle);
+    float c = cos(angle);
+    uv -= pivot;
+    uv = vec2(uv.x * c - uv.y * s, uv.x * s + uv.y * c);
+    uv += pivot;
+    return uv;
+}
+
+
+
+void main() {
+    vec2 uv = rotateUV(v_uv, u_texPivot, u_texAngle);
+
+    // Pivot marker
+    float d = distance(uv, u_texPivot);
+
+    // Radius in uv space
+    float r = 0.015;
+
+    // Smoothing 
+    float marker = 1.0 - smoothstep(r * 0.6, r, d);
+
+
+    // Normal map (tangent space -> view space)
+    vec3 n_ts = texture2D(u_normalTex, uv).xyz * 2.0 - 1.0;
+    mat3 TBN = mat3(normalize(v_T), normalize(v_B), normalize(v_N));
+    vec3 N = normalize(TBN * n_ts);
+
+    vec3 L = normalize(u_lightPos - v_posVS);
+    vec3 V = normalize(-v_posVS);
+    vec3 H = normalize(L + V);
+
+    float NdotL = max(dot(N, L), 0.0);
+
+    vec3 kd = texture2D(u_diffuseTex, uv).rgb;
+    vec3 ks = texture2D(u_specularTex, uv).rgb;
+
+    vec3 ambient  = u_ambientColor * kd;
+    vec3 diffuse  = (u_diffuseColor * kd) * NdotL;
+
+    float specPow = pow(max(dot(N, H), 0.0), u_shininess);
+    vec3 specular = (u_specularColor * ks) * specPow;
+    
+    vec3 baseColor = ambient + diffuse + specular;
+
+    vec3 markerColor = vec3(1.0, 0.1, 0.1);
+
+    // Mix texture with marker
+    vec3 finalColor = mix(baseColor, markerColor, marker);
+
+    gl_FragColor = vec4(finalColor, 1.0);
+
+
+    
+}`;
